@@ -23,7 +23,7 @@ No files are modified, installed, or removed.
 
 ## License
 
-This repository does not specify a license.
+This repository is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 

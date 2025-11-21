@@ -1,6 +1,10 @@
-// Zilch is an entertaining and amusing simulation of an installer.
-// It demonstrates the utility of V's builtin `term` module.
-// Inspiration is from: https://github.com/buyukakyuz/install-nothing
+// zilch is a playful project that simulates the experience of running an
+// installer, but in reality, it doesn’t actually do anything (“zilch”). It’s
+// designed for humor and entertainment, mimicking installer visuals and
+// progress, but accomplishes nothing under the hood.
+//
+// `zilch` demonstrates the utility of V's builtin `term` module.
+// Inspired by: https://github.com/buyukakyuz/install-nothing
 //
 import math
 import os
@@ -21,13 +25,13 @@ fn installer_run() {
 
 fn preamble() {
 	title('> Preamble')
-	orange('=================================================================')
-	text('         UNIVERSAL SYSTEM INSTALLER v3.2.1 (Build 1999)')
-	orange('=================================================================')
-	nl()
-	failed('*** THIS IS A SIMULATION - NO ACTUAL INSTALLATION OCCURRING ***')
+	info('=================================================================')
+	info('         UNIVERSAL SYSTEM INSTALLER v3.2.1 (Build 1999)')
+	info('=================================================================')
+	br()
+	fail('*** THIS IS A SIMULATION - NO ACTUAL INSTALLATION OCCURRING ***')
 	bold('Press Ctrl+C to exit at any time')
-	nl()
+	br()
 	wait_medium()
 }
 
@@ -43,42 +47,77 @@ fn initializing_system() {
 fn bios_firmware() {
 	title('> BIOS/Firmware Update Sequence')
 	wait_short()
-	cyan('╔═══════════════════════════════════════════════════════════════╗')
-	cyan('║  American Megatrends BIOS (C)2003-2025                        ║')
-	cyan('║  AMIBIOS v08.00.15                                            ║')
-	cyan('╚═══════════════════════════════════════════════════════════════╝')
+	info('╔═══════════════════════════════════════════════════════════════╗')
+	info('║  American Megatrends BIOS (C)2003-2025                        ║')
+	info('║  AMIBIOS v08.00.15                                            ║')
+	info('╚═══════════════════════════════════════════════════════════════╝')
 
-	nl()
-	spinn(term.dim('BIOS Date:   11/15/2025  S/N: B3D2-D0DE-065C-97F1'))
-	spinn(term.dim('System Date: ${time.now()}'))
-	spinn(term.dim('System:      ${os.uname().nodename}'))
+	br()
+	spin_tail('', term.dim('BIOS Date:   11/15/2025  S/N: B3D2-D0DE-065C-97F1'))
+	spin_tail('', term.dim('System Date: ${time.now()}'))
+	spin_tail('', term.dim('System:      ${os.uname().nodename}'))
 
-	nl()
-	text('Performing POST (Power-On Self Test)...')
+	br()
+	log('Performing POST (Power-On Self Test)...')
 	wait_long()
-	spinn('CPU:       Meaningless Model Number')
-	spinn('CPU Cores: ${runtime.nr_cpus()} physical')
-	spinn('CPU Speed: Never fast enough')
+	spin_tail('CPU:       ', 'Meaningless Model Number')
+	spin_tail('CPU Cores: ', '${runtime.nr_cpus()} physical')
+	spin_tail('CPU Speed: ', 'Never fast enough')
 
-	nl()
+	br()
 	progress('Testing Memory: ')
 	tm := u64(runtime.total_memory() or { 0 })
-	text('  Total Memory: ${readable_size(tm, false)} (${num_with_commas(tm)})')
+	log('  Total Memory: ${readable_size(tm, false)} (${num_with_commas(tm)})')
 
-	nl()
-	text('Detecting IDE Devices...')
-	spinn('Primary Master   [0x1F0-0x1F7]: WDC WD2000JB-00GVC0 ')
-	spinn('Primary Slave    [0x1F0-0x1F7]: None                ')
-	spinn('Secondary Master [0x170-0x177]: ATAPI CD-ROM        ')
-	spinn('Secondary Slave  [0x170-0x177]: None                ')
+	br()
+	log('Detecting IDE Devices...')
+	spin_tail('', 'Primary Master   [0x1F0-0x1F7]: WDC WD2000JB-00GVC0')
+	spin_tail('', 'Primary Slave    [0x1F0-0x1F7]: None')
+	spin_tail('', 'Secondary Master [0x170-0x177]: ATAPI CD-ROM')
+	spin_tail('', 'Secondary Slave  [0x170-0x177]: None')
 
-	nl()
-	text('Scanning PCI bus...')
+	br()
+	log('Scanning PCI bus...')
 	print('  Probing 00:00.0 - 00:1F.7:')
 	progress(' ')
 	spinn('Found 00:09.0 - VGA Compatible Controller')
 	spinn('Found 00:1B.0 - Ethernet Controller')
 	spinn('Found 00:1F.3 - SMBus Controller')
+	br()
+	spin_tail('', 'Network Adapters: 19 detected')
+	spin_tail('', 'USB Controller:   UHCI/EHCI Compatible')
+	spin_tail('', 'USB Device(s):    0 connected')
+	br()
+	spin_tail('Host OS:         ', 'Darwin')
+	spin_tail('Storage Devices: ', '2 disk(s) found')
+	spin_tail('System UUID:     ', '00C3A225-B7AB-4867-6F13-B7294D4BBB64')
+	br()
+	log('Boot Device Priority:')
+	spin_tail('', '1st: Hard Disk Drive')
+	spin_tail('', '2nd: CD-ROM Drive')
+	spin_tail('', '3rd: Network Boot')
+
+	br()
+	alert('═══════════════════════════════════════════════════════════════')
+	alert('CRITICAL: Firmware Update Sequence Initiated')
+	alert('═══════════════════════════════════════════════════════════════')
+	br()
+	spin_tail('Backing up current BIOS to NVRAM... ', term.green('OK'))
+	spin_tail('Verifying backup integrity... CRC32 ', term.green('OK'))
+	br()
+	warn('  WARNING: Do NOT power off or restart during this process!')
+	warn('  System damage may occur if interrupted!')
+	br()
+	progress('  Erasing flash sectors: ')
+	progress('  Writing new firmware: ')
+	progress('  Verifying firmware: ')
+	br()
+	log('  Firmware update complete!')
+	log('  Updating ESCD (Extended System Configuration Data)...')
+	br()
+	wait_short()
+	success('  BIOS update successful - AMIBIOS v08.00.15 -> v08.00.16')
+	success('  System will initialize with new firmware')
 }
 
 // ===============================
@@ -97,28 +136,36 @@ fn wait_long() {
 	time.sleep(time.millisecond * 2500)
 }
 
+fn spin_tail(s string, tail string) {
+	duration := rand.int_in_range(500, 1500) or { 500 }
+	spinner(s, duration, ['|', '/', '-', '\\'], ' ', tail)
+}
+
 fn spinn(s string) {
 	duration := rand.int_in_range(500, 1500) or { 500 }
-	spinner(s, duration, ['|', '/', '-', '\\'], ' ')
+	spinner(s, duration, ['|', '/', '-', '\\'], ' ', '')
 }
 
 fn spin(s string) {
 	duration := rand.int_in_range(500, 1500) or { 500 }
-	spinner(s, duration, ['|', '/', '-', '\\'], '✓')
+	spinner(s, duration, ['|', '/', '-', '\\'], '✓', '')
 }
 
-fn spinner(s string, duration int, spin_chars []string, final string) {
+fn spinner(s string, duration int, spin_chars []string, final string, tail string) {
 	interval := 65
 	count := duration / interval
 	print('  ${s}')
-	term.cursor_back(s.len + 2)
+	term.cursor_back(real_length(s) + 2)
 	for i := 0; i < count; i++ {
 		print(spin_chars[i % spin_chars.len])
 		term.cursor_back(1)
 		flush_stdout()
 		time.sleep(interval * time.millisecond)
 	}
-	green(final)
+	print(term.green(final))
+	flush_stdout()
+	term.cursor_forward(real_length(s) + 1)
+	log(tail)
 }
 
 fn progress(front string) {
@@ -132,7 +179,8 @@ fn progress(front string) {
 		print(bar)
 		term.cursor_back(bar.len)
 		flush_stdout()
-		time.sleep(100 * time.millisecond)
+		snooze := rand.int_in_range(75, 250) or { 100 }
+		time.sleep(snooze * time.millisecond)
 	}
 	println('[${term.green('#'.repeat(len))}] 100%')
 }
@@ -141,38 +189,47 @@ fn text(s string) {
 	println(s)
 }
 
-fn nl() {
+fn br() {
 	println('')
 }
 
 fn title(s string) {
-	nl()
-	yellow(term.bold(s))
-	nl()
+	br()
+	alert(term.bold(s))
+	br()
 }
 
 fn bold(s string) {
 	println(term.bold(s))
 }
 
-fn green(s string) {
+fn log(s string) {
+	println(s)
+}
+
+fn success(s string) {
 	println(term.green(s))
 }
 
-fn yellow(s string) {
-	println(term.yellow(s))
-}
-
-fn orange(s string) {
-	println(term.hex(0xffaf00, s))
-}
-
-fn failed(s string) {
+fn fail(s string) {
 	println(term.failed(s))
 }
 
-fn cyan(s string) {
+fn info(s string) {
 	println(term.bright_cyan(s))
+}
+
+fn alert(s string) {
+	println(term.yellow(s))
+}
+
+fn warn(s string) {
+	println(term.hex(0xffaf00, s))
+}
+
+// red : can't use `error` for fn name
+fn red(s string) {
+	println(term.bright_red(s))
 }
 
 fn num_with_commas(num u64) string {
@@ -201,4 +258,8 @@ fn readable_size(size u64, si bool) string {
 		sz /= kb
 	}
 	return size.str()
+}
+
+fn real_length(s string) int {
+	return term.strip_ansi(s).runes().len
 }

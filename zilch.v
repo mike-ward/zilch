@@ -21,6 +21,7 @@ fn installer_run() {
 	preamble()
 	initializing_system()
 	bios_firmware()
+	boot()
 }
 
 fn preamble() {
@@ -58,7 +59,7 @@ fn bios_firmware() {
 	spin_tail('', term.dim('System:      ${os.uname().nodename}'))
 
 	br()
-	log('Performing POST (Power-On Self Test)...')
+	p('Performing POST (Power-On Self Test)...')
 	wait_long()
 	spin_tail('CPU:       ', 'Meaningless Model Number')
 	spin_tail('CPU Cores: ', '${runtime.nr_cpus()} physical')
@@ -67,18 +68,18 @@ fn bios_firmware() {
 	br()
 	progress('Testing Memory: ')
 	tm := u64(runtime.total_memory() or { 0 })
-	log('  Total Memory: ${readable_size(tm, false)} (${num_with_commas(tm)})')
+	p('  Total Memory: ${readable_size(tm, false)} (${num_with_commas(tm)})')
 
 	br()
-	log('Detecting IDE Devices...')
+	p('Detecting IDE Devices...')
 	spin_tail('', 'Primary Master   [0x1F0-0x1F7]: WDC WD2000JB-00GVC0')
 	spin_tail('', 'Primary Slave    [0x1F0-0x1F7]: None')
 	spin_tail('', 'Secondary Master [0x170-0x177]: ATAPI CD-ROM')
 	spin_tail('', 'Secondary Slave  [0x170-0x177]: None')
 
 	br()
-	log('Scanning PCI bus...')
-	print('  Probing 00:00.0 - 00:1F.7:')
+	p('Scanning PCI bus...')
+	pnr('  Probing 00:00.0 - 00:1F.7:')
 	progress(' ')
 	spinn('Found 00:09.0 - VGA Compatible Controller')
 	spinn('Found 00:1B.0 - Ethernet Controller')
@@ -92,18 +93,20 @@ fn bios_firmware() {
 	spin_tail('Storage Devices: ', '2 disk(s) found')
 	spin_tail('System UUID:     ', '00C3A225-B7AB-4867-6F13-B7294D4BBB64')
 	br()
-	log('Boot Device Priority:')
+	p('Boot Device Priority:')
 	spin_tail('', '1st: Hard Disk Drive')
 	spin_tail('', '2nd: CD-ROM Drive')
 	spin_tail('', '3rd: Network Boot')
 
 	br()
-	alert('═══════════════════════════════════════════════════════════════')
-	alert('CRITICAL: Firmware Update Sequence Initiated')
-	alert('═══════════════════════════════════════════════════════════════')
+	alert('╔═════════════════════════════════════════════════════════════╗')
+	alert('║  CRITICAL: Firmware Update Sequence Initiated               ║')
+	alert('╚═════════════════════════════════════════════════════════════╝')
+	wait_medium()
 	br()
 	spin_tail('Backing up current BIOS to NVRAM... ', term.green('OK'))
 	spin_tail('Verifying backup integrity... CRC32 ', term.green('OK'))
+	wait_short()
 	br()
 	warn('  WARNING: Do NOT power off or restart during this process!')
 	warn('  System damage may occur if interrupted!')
@@ -112,12 +115,32 @@ fn bios_firmware() {
 	progress('  Writing new firmware: ')
 	progress('  Verifying firmware: ')
 	br()
-	log('  Firmware update complete!')
-	log('  Updating ESCD (Extended System Configuration Data)...')
+	p('  Firmware update complete!')
+	spin_tail_long('Updating ESCD (Extended System Configuration Data)... ', term.green('OK'))
+	wait_medium()
 	br()
-	wait_short()
 	success('  BIOS update successful - AMIBIOS v08.00.15 -> v08.00.16')
 	success('  System will initialize with new firmware')
+}
+
+fn boot() {
+	title('> Kernel Boot Sequence')
+	pd('q6asm_callback: payload size of 8 is less than expected.')
+	pd('stk3x3x_enable_ps: ps input event=1, ps=0')
+	pd('q6core_get_service_version: Failed to get service size for service id 7 with error -95')
+	pd('cmdq_host_alloc_tdl: desc_size: 1024 data_sz: 63488 slot-sz: 32')
+	wait_short()
+	pd('daixianze msm_mi2s_snd_shutdown tert_mi2s_gpio_p')
+	pd('/cpus/cpu@101: Missing clock-frequency property')
+	wait_short()
+	pd('q6asm_callback: payload size of 8 is less than expected.')
+	pd('Active_profile:speaker, next_profile:speaker')
+	pd('qcrypto 1de0000.qcrypto: qcrypto-ecb-aes')
+	pd("init: Service 'vendor.qcom-sh' (pid 867) exited with status 0")
+	wait_medium()
+	pd('himax_tp: probe of 4-0048 failed with error -1')
+	pd('IRQ5 no longer affine to CPU5')
+	pd("init: starting service 'vendor.nfc_hal_service'...}")
 }
 
 // ===============================
@@ -136,100 +159,111 @@ fn wait_long() {
 	time.sleep(time.millisecond * 2500)
 }
 
+fn spin_tail_long(s string, tail string) {
+	spinner(s, 3000, ' ', tail)
+}
+
 fn spin_tail(s string, tail string) {
 	duration := rand.int_in_range(500, 1500) or { 500 }
-	spinner(s, duration, ['|', '/', '-', '\\'], ' ', tail)
+	spinner(s, duration, ' ', tail)
 }
 
 fn spinn(s string) {
 	duration := rand.int_in_range(500, 1500) or { 500 }
-	spinner(s, duration, ['|', '/', '-', '\\'], ' ', '')
+	spinner(s, duration, ' ', '')
 }
 
 fn spin(s string) {
 	duration := rand.int_in_range(500, 1500) or { 500 }
-	spinner(s, duration, ['|', '/', '-', '\\'], '✓', '')
+	spinner(s, duration, '✓', '')
 }
 
-fn spinner(s string, duration int, spin_chars []string, final string, tail string) {
+const spin_chars = ['|', '/', '-', '\\']
+
+fn spinner(s string, duration int, final string, tail string) {
 	interval := 65
 	count := duration / interval
-	print('  ${s}')
-	term.cursor_back(real_length(s) + 2)
+	pnr('  ${s}')
+	term.cursor_back(display_length(s) + 2)
 	for i := 0; i < count; i++ {
-		print(spin_chars[i % spin_chars.len])
+		pnr(spin_chars[i % spin_chars.len])
 		term.cursor_back(1)
 		flush_stdout()
 		time.sleep(interval * time.millisecond)
 	}
-	print(term.green(final))
+	pnr(term.green(final))
 	flush_stdout()
-	term.cursor_forward(real_length(s) + 1)
-	log(tail)
+	term.cursor_forward(display_length(s) + 1)
+	p(tail)
 }
 
 fn progress(front string) {
 	len := 20
 	term.hide_cursor()
 	defer { term.show_cursor() }
-	print(front)
+	pnr(front)
 	for i := 0; i < len; i++ {
 		percent := int(f32(i) / f32(len) * 10)
 		bar := '[${'#'.repeat(i)}${' '.repeat(len - i)}] ${percent}0% '
-		print(bar)
+		pnr(bar)
 		term.cursor_back(bar.len)
 		flush_stdout()
 		snooze := rand.int_in_range(75, 250) or { 100 }
 		time.sleep(snooze * time.millisecond)
 	}
-	println('[${term.green('#'.repeat(len))}] 100%')
+	p('[${term.green('#'.repeat(len))}] 100%')
 }
 
-fn text(s string) {
+fn p(s string) {
 	println(s)
 }
 
+fn pnr(s string) {
+	print(s)
+}
+
 fn br() {
-	println('')
+	p('')
 }
 
 fn title(s string) {
 	br()
 	alert(term.bold(s))
 	br()
+	wait_short()
 }
 
 fn bold(s string) {
-	println(term.bold(s))
+	p(term.bold(s))
 }
 
-fn log(s string) {
-	println(s)
+fn pd(s string) {
+	p(term.dim(s))
 }
 
 fn success(s string) {
-	println(term.green(s))
+	p(term.green(s))
 }
 
 fn fail(s string) {
-	println(term.failed(s))
+	p(term.failed(s))
 }
 
 fn info(s string) {
-	println(term.bright_cyan(s))
+	p(term.bright_cyan(s))
 }
 
 fn alert(s string) {
-	println(term.yellow(s))
+	p(term.yellow(s))
 }
 
 fn warn(s string) {
-	println(term.hex(0xffaf00, s))
+	p(term.hex(0xffaf00, s))
 }
 
-// red : can't use `error` for fn name
-fn red(s string) {
-	println(term.bright_red(s))
+// perror : can't use `error` for fn name
+fn perror(s string) {
+	p(term.bright_red(s))
 }
 
 fn num_with_commas(num u64) string {
@@ -260,6 +294,6 @@ fn readable_size(size u64, si bool) string {
 	return size.str()
 }
 
-fn real_length(s string) int {
-	return term.strip_ansi(s).runes().len
+fn display_length(s string) int {
+	return utf8_str_visible_length(term.strip_ansi(s))
 }

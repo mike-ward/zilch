@@ -8,7 +8,7 @@ An entertaining and amusing simulation of an installer.
 actually do anything (“zilch”). It’s designed for humor and entertainment, mimicking installer visuals and progress, but
 accomplishes nothing under the hood.
 
-[demo.mp4](https://raw.github.com/mike-ward/zilch/blob/main/demo.mp4)
+[demo.mp4](https://raw.githubusercontent.com/mike-ward/zilch/blob/main/demo.mp4)
 
 ## Features
 

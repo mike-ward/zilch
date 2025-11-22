@@ -4,7 +4,11 @@ An entertaining and amusing simulation of an installer.
 
 ## Description
 
-**zilch** is a playful project that simulates the experience of running an installer, but in reality, it doesn’t actually do anything (“zilch”). It’s designed for humor and entertainment, mimicking installer visuals and progress, but accomplishes nothing under the hood.
+**zilch** is a playful project that simulates the experience of running an installer, but in reality, it doesn’t
+actually do anything (“zilch”). It’s designed for humor and entertainment, mimicking installer visuals and progress, but
+accomplishes nothing under the hood.
+
+![demo](demo.mp4)
 
 ## Features
 

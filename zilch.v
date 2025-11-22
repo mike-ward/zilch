@@ -18,16 +18,25 @@ fn main() {
 }
 
 fn installer_run() {
+	term.clear()
 	preamble()
 	initializing_system()
 	bios_firmware()
 	boot()
 	boot_loader()
 	file_system()
+	system()
+	network()
+	hardware()
+	database()
+	services()
+	retro()
+	localization()
+	optimization()
+	title('>>>> The End <<<<<')
 }
 
 fn preamble() {
-	term.clear()
 	info('=================================================================')
 	info('         UNIVERSAL SYSTEM INSTALLER v3.2.1 (Build 1999)')
 	info('=================================================================')
@@ -91,7 +100,8 @@ fn bios_firmware() {
 	spin_tail('', 'USB Controller:   UHCI/EHCI Compatible')
 	spin_tail('', 'USB Device(s):    0 connected')
 	br()
-	spin_tail('Host OS:         ', 'Darwin')
+	uname := os.uname()
+	spin_tail('Host OS:         ', '${uname.sysname} (${uname.release})')
 	spin_tail('Storage Devices: ', '2 disk(s) found')
 	spin_tail('System UUID:     ', '00C3A225-B7AB-4867-6F13-B7294D4BBB64')
 	br()
@@ -210,6 +220,164 @@ fn file_system() {
 	success('/dev/sda2: 11/2048000 files (0.0% non-contiguous), 200000/8192000 blocks')
 }
 
+fn system() {
+	title('> System Component Installation')
+	spin_tail('Loading kernel modules', term.green(' [OK]'))
+	spin_tail('Mounting root filesystem (ext3)', term.green(' [OK]'))
+	spin_tail('Initializing network interfaces', term.green(' [OK]'))
+	spin_tail('Starting system daemons', term.green(' [OK]'))
+	spin_tail('Configuring system clock', term.green(' [OK]'))
+	br()
+	progress('Building module dependencies: ')
+}
+
+fn network() {
+	title('> Network Configuration')
+	br()
+	ps('Configuring network interfaces...')
+	pds('  Interface: eth0')
+	ps(term.green('  Requesting DHCP lease on eth0...'))
+	pds('  IP Address: 192.168.239.190')
+	pds('  Netmask: 255.255.255.0')
+	pds('  Gateway: 192.168.50.1')
+	pds('  DNS: 8.8.8.8, 8.8.4.4')
+	br()
+	ps('  Configuring DNS resolution...')
+	wait_medium()
+	pds('  Updating /etc/resolv.conf')
+	br()
+	wait_medium()
+	ps('  Reversing polarity of neutron flow...')
+}
+
+fn hardware() {
+	title('> Hardware Driver Installation')
+	pws('Detecting: VGA Graphics Adapter', ' [FOUND]')
+	ps('   └─ Loading driver: VESA 2.0 Compatible')
+	pws('Detecting: Sound Blaster 16', ' [FOUND]')
+	ps('   └─ Loading driver: Creative Labs')
+	pws('Detecting: Intel 82540EM Gigabit Ethernet', ' [FOUND]')
+	ps('   └─ Loading driver: e1000')
+	pws('Detecting: PS/2 Mouse', ' [FOUND]')
+	ps('   └─ Loading driver: Generic')
+	pws('Detecting: USB 1.1 UHCI Controller', ' [FOUND]')
+	ps('   └─ Loading driver: usb-uhci')
+}
+
+fn database() {
+	title('> Database Server Installation')
+	ps('Installing PostgreSQL Server 14.2...')
+	ps('  Initializing database cluster...')
+	pds('The files belonging to this database system will be owned by user "postgres".')
+	pds('This user must also own the server process.')
+	br()
+	ps('Creating database files...')
+	pds('  creating global/pg_control')
+	wait_short()
+	pds('  creating base/1/pg_filenode.map')
+	wait_short()
+	pds('  creating base/template1/pg_version')
+	wait_short()
+	pds('  creating pg_wal/000000010000000000000001')
+	wait_short()
+	pds('  creating pg_multixact/offsets/0000')
+	br()
+	wait_short()
+	progress('Initializing system tables: ')
+	br()
+	ps('Creating template databases...')
+	wait_medium()
+	success('  Success. You can now start the database server using:')
+	pds('  pdpg_ctl -D /var/lib/postgresql/dataa')
+	br()
+	alert('Mirror unresponsive, trying alternate server')
+	ps('  Reconnecting to mirror.oldsoft.org')
+	wait_long()
+	success('  Success')
+}
+
+fn services() {
+	title('Starting system services...')
+	stall('[ OK ] Started Network Manager....')
+	stall('[ OK ] Started Network Name Resolution....')
+	stall('[ OK ] Started OpenSSH server daemon....')
+	stall('[ OK ] Started Regular background program processing daemon....')
+	stall('[ OK ] Started System Logging Service....')
+	stall('[ OK ] Started D-Bus System Message Bus....')
+	stall('[ OK ] Started Avahi mDNS/DNS-SD Stack....')
+	stall('[ OK ] Started CUPS Scheduler....')
+	stall('[ OK ] Started Bluetooth service....')
+	stall('[ OK ] Started The Apache HTTP Server....')
+	br()
+	pds('Loaded 10 services, 10 active')
+}
+
+fn retro() {
+	title('> Retro Software Installation')
+	ps('Installing Netscape Navigator v4.79')
+	ps('  Checking for previous installation...')
+	progress('  Extracting files (14.9MB): ')
+	pds('  Creating shortcuts...')
+	br()
+	ps('Installing WinAmp v2.95')
+	progress('  Extracting files (3.3MB): ')
+	pds('  Creating shortcuts...')
+	br()
+	ps('Installing mIRC v6.35')
+	progress('  Extracting files (1.8MB): ')
+	pds('  Creating shortcuts...')
+	br()
+	ps('Installing RealPlayer v8.0')
+	progress('  Extracting files (8.7MB): ')
+	pds('  Creating shortcuts...')
+	pds('  Registering file associations...)')
+	br()
+	ps('Installing Adobe Flash Player v7.0')
+	progress('  Extracting files (2.3MB): ')
+	pds('  Creating shortcuts...')
+}
+
+fn localization() {
+	title('> Localization Configuration')
+	pds('Generating locales...')
+	pds('Generating locale en_US.UTF-8...')
+	wait_medium()
+	success('done')
+	pds('Generating locale en_GB.UTF-8...')
+	wait_medium()
+	success('done')
+	pds('Generating locale de_DE.UTF-8...')
+	wait_medium()
+	success('done')
+	pds('Generating locale fr_FR.UTF-8...')
+	wait_medium()
+	success('done')
+	pds('Generating locale es_ES.UTF-8...')
+	wait_medium()
+	success('done')
+	pds('Generating locale ja_JP.UTF-8...')
+	wait_medium()
+	success('done')
+	pds('Generating locale zh_CN.UTF-8...')
+	wait_medium()
+	success('done')
+	br()
+	progress('Building locale archive: ')
+	br()
+	ps('Configuring timezone...')
+	wait_short()
+	pds('Timezone set to: Europe/Berlin')
+}
+
+fn optimization() {
+	title('> System Optimization')
+	progress('Defragmenting installation cache ')
+	progress('Rebuilding font cache ')
+	progress('Updating shared library cache ')
+	progress('Optimizing package database ')
+	progress('Generating manual page index ')
+}
+
 // ===============================
 //            helpers
 // ===============================
@@ -247,6 +415,15 @@ fn spinn(s string) {
 fn spin(s string) {
 	duration := rand.int_in_range(500, 1500) or { 500 }
 	spinner(s, duration, '✓', '')
+}
+
+fn stall(s string) {
+	pnr(term.cyan(s.replace('OK', '**')))
+	flush_stdout()
+	snooze := rand.int_in_range(200, 700) or { 300 }
+	time.sleep(snooze * time.millisecond)
+	term.cursor_back(display_length(s))
+	success(s)
 }
 
 const spin_chars = ['|', '/', '-', '\\']
@@ -301,6 +478,13 @@ fn pds(s string) {
 
 fn pnr(s string) {
 	print(s)
+}
+
+fn pws(s string, t string) {
+	pnr(s)
+	snooze := rand.int_in_range(200, 500) or { 250 }
+	time.sleep(snooze * time.millisecond)
+	println(term.green(t))
 }
 
 fn br() {

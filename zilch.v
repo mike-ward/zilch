@@ -22,10 +22,12 @@ fn installer_run() {
 	initializing_system()
 	bios_firmware()
 	boot()
+	boot_loader()
+	file_system()
 }
 
 fn preamble() {
-	title('> Preamble')
+	term.clear()
 	info('=================================================================')
 	info('         UNIVERSAL SYSTEM INSTALLER v3.2.1 (Build 1999)')
 	info('=================================================================')
@@ -115,7 +117,8 @@ fn bios_firmware() {
 	progress('  Writing new firmware: ')
 	progress('  Verifying firmware: ')
 	br()
-	p('  Firmware update complete!')
+	ps('  Firmware update complete!')
+	br()
 	spin_tail_long('Updating ESCD (Extended System Configuration Data)... ', term.green('OK'))
 	wait_medium()
 	br()
@@ -125,27 +128,95 @@ fn bios_firmware() {
 
 fn boot() {
 	title('> Kernel Boot Sequence')
-	pd('q6asm_callback: payload size of 8 is less than expected.')
-	pd('stk3x3x_enable_ps: ps input event=1, ps=0')
-	pd('q6core_get_service_version: Failed to get service size for service id 7 with error -95')
-	pd('cmdq_host_alloc_tdl: desc_size: 1024 data_sz: 63488 slot-sz: 32')
+	pds('q6asm_callback: payload size of 8 is less than expected.')
+	pds('stk3x3x_enable_ps: ps input event=1, ps=0')
+	pds('q6core_get_service_version: Failed to get service size for service id 7 with error -95')
+	pds('cmdq_host_alloc_tdl: desc_size: 1024 data_sz: 63488 slot-sz: 32')
 	wait_short()
-	pd('daixianze msm_mi2s_snd_shutdown tert_mi2s_gpio_p')
-	pd('/cpus/cpu@101: Missing clock-frequency property')
+	pds('daixianze msm_mi2s_snd_shutdown tert_mi2s_gpio_p')
+	pds('/cpus/cpu@101: Missing clock-frequency property')
 	wait_short()
-	pd('q6asm_callback: payload size of 8 is less than expected.')
-	pd('Active_profile:speaker, next_profile:speaker')
-	pd('qcrypto 1de0000.qcrypto: qcrypto-ecb-aes')
-	pd("init: Service 'vendor.qcom-sh' (pid 867) exited with status 0")
+	pds('q6asm_callback: payload size of 8 is less than expected.')
+	pds('Active_profile:speaker, next_profile:speaker')
+	pds('qcrypto 1de0000.qcrypto: qcrypto-ecb-aes')
+	pds("init: Service 'vendor.qcom-sh' (pid 867) exited with status 0")
 	wait_medium()
-	pd('himax_tp: probe of 4-0048 failed with error -1')
-	pd('IRQ5 no longer affine to CPU5')
-	pd("init: starting service 'vendor.nfc_hal_service'...}")
+	pds('himax_tp: probe of 4-0048 failed with error -1')
+	pds('IRQ5 no longer affine to CPU5')
+	pds("init: starting service 'vendor.nfc_hal_service'...}")
+}
+
+fn boot_loader() {
+	title('> Bootloader Installation')
+	ps('Installing GRUB2 bootloader...')
+	pds('Probing devices for bootloader installation...')
+	pds('Installing for x86_64-pc platform to /dev/sda')
+	br()
+	wait_short()
+
+	p('Generating grub configuration file...')
+	wait_short()
+	pds('Found linux image: /boot/vmlinuz-5.4.0-42-generic')
+	pds('Found initrd image: /boot/initrd.img-5.4.0-42-generic')
+	pds('Found linux image: /boot/vmlinuz-5.4.0-40-generic')
+	wait_short()
+	pds('Found initrd image: /boot/initrd.img-5.4.0-40-generic')
+	wait_short()
+	pds('Found linux image: /boot/vmlinuz-5.4.0-39-generic')
+	pds('Found initrd image: /boot/initrd.img-5.4.0-39-generic')
+	pds('Found Windows Boot Manager on /dev/sda1')
+	br()
+	wait_short()
+
+	ps('Installing bootloader to disk...')
+	spin_tail_long(term.dim('Installation finished. No error reported. '), term.green('OK'))
+	br()
+
+	spin('Reticulating splines...')
+}
+
+fn file_system() {
+	title('> Filesystem Operations')
+	p('Creating ext4 filesystem on /dev/sda2...')
+	pds('mke2fs 1.45.5 (07-Jan-2020)')
+	pds('Creating filesystem with 73436249 4k blocks and 18359062 inodes')
+	pds('Filesystem UUID: 8f3e1a2b-4c5d-6e7f-8a9b-0c1d2e3f4a5b')
+	pds('Superblock backups stored on blocks:')
+	pds('    32768')
+	pds('    98304')
+	pds('    163840')
+	pds('    229376')
+	pds('    294912')
+
+	br()
+	progress('Allocating group tables: ')
+	progress('Writing inode tables: ')
+	br()
+	pds('Creating journal (32768 blocks):')
+	wait_medium()
+	success('  done')
+	pds('Writing superblocks and filesystem accounting information:')
+	wait_medium()
+	success('  done')
+
+	br()
+	ps('Running filesystem check...')
+	pds('e2fsck 1.45.5 (07-Jan-2020)')
+	pds('Pass 1: Checking inodes, blocks, and sizes')
+	pds('Pass 2: Checking directory structure')
+	pds('Pass 3: Checking directory connectivity')
+	pds('Pass 4: Checking reference counts')
+	pds('Pass 5: Checking group summary information')
+	success('/dev/sda2: 11/2048000 files (0.0% non-contiguous), 200000/8192000 blocks')
 }
 
 // ===============================
 //            helpers
 // ===============================
+
+fn wait_x_short() {
+	time.sleep(time.millisecond * 100)
+}
 
 fn wait_short() {
 	time.sleep(time.millisecond * 500)
@@ -216,6 +287,16 @@ fn progress(front string) {
 
 fn p(s string) {
 	println(s)
+}
+
+fn ps(s string) {
+	p(s)
+	wait_x_short()
+}
+
+fn pds(s string) {
+	pd(s)
+	wait_x_short()
 }
 
 fn pnr(s string) {

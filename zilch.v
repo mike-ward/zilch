@@ -48,12 +48,12 @@ fn preamble() {
 }
 
 fn initializing_system() {
-	spin('Initializing installation environment...')
-	wait_short()
-	spin('Detecting hardware configuration...')
-	wait_short()
-	spin('Calibrating flux capacitor...')
-	wait_short()
+	spin_wait('Initializing installation environment...')
+	spin_wait('Detecting hardware configuration...')
+	spin_wait('Calibrating flux capacitor...')
+	spin_wait('Fabricating imaginary infrastructure...')
+	spin_wait('Preparing captive simulators...')
+	spin_wait('Blurring reality lines...')
 }
 
 fn bios_firmware() {
@@ -132,6 +132,7 @@ fn bios_firmware() {
 	spin_tail_long('Updating ESCD (Extended System Configuration Data)... ', term.green('OK'))
 	wait_medium()
 	br()
+	progress('  Recomputing mammal matrix: ')
 	success('  BIOS update successful - AMIBIOS v08.00.15 -> v08.00.16')
 	success('  System will initialize with new firmware')
 }
@@ -376,6 +377,7 @@ fn optimization() {
 	progress('Updating shared library cache ')
 	progress('Optimizing package database ')
 	progress('Generating manual page index ')
+	progress('Compiling reticulated splines ')
 }
 
 // ===============================
@@ -415,6 +417,11 @@ fn spinn(s string) {
 fn spin(s string) {
 	duration := rand.int_in_range(500, 1500) or { 500 }
 	spinner(s, duration, '✓', '')
+}
+
+fn spin_wait(s string) {
+	spin(s)
+	wait_short()
 }
 
 fn stall(s string) {

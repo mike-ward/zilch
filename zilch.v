@@ -33,7 +33,7 @@ fn installer_run() {
 	retro()
 	localization()
 	optimization()
-	title('>>>> The End <<<<<')
+	section('>>>> The End <<<<<')
 }
 
 fn preamble() {
@@ -44,21 +44,21 @@ fn preamble() {
 	fail('*** THIS IS A SIMULATION - NO ACTUAL INSTALLATION OCCURRING ***')
 	bold('Press Ctrl+C to exit at any time')
 	br()
-	wait_medium()
+	sleep_medium()
 }
 
 fn initializing_system() {
-	spin_wait('Initializing installation environment...')
-	spin_wait('Detecting hardware configuration...')
-	spin_wait('Calibrating flux capacitor...')
-	spin_wait('Fabricating imaginary infrastructure...')
-	spin_wait('Preparing captive simulators...')
-	spin_wait('Blurring reality lines...')
+	spin_short('Initializing installation environment...')
+	spin_short('Detecting hardware configuration...')
+	spin_short('Calibrating flux capacitor...')
+	spin_short('Fabricating imaginary infrastructure...')
+	spin_short('Preparing captive simulators...')
+	spin_short('Blurring reality lines...')
 }
 
 fn bios_firmware() {
-	title('> BIOS/Firmware Update Sequence')
-	wait_short()
+	section('> BIOS/Firmware Update Sequence')
+	sleep_short()
 	info('╔═══════════════════════════════════════════════════════════════╗')
 	info('║  American Megatrends BIOS (C)2003-2025                        ║')
 	info('║  AMIBIOS v08.00.15                                            ║')
@@ -71,7 +71,7 @@ fn bios_firmware() {
 
 	br()
 	p('Performing POST (Power-On Self Test)...')
-	wait_long()
+	sleep_long()
 	spin_tail('CPU:       ', 'Meaningless Model Number')
 	spin_tail('CPU Cores: ', '${runtime.nr_cpus()} physical')
 	spin_tail('CPU Speed: ', 'Never fast enough')
@@ -92,9 +92,9 @@ fn bios_firmware() {
 	p('Scanning PCI bus...')
 	pnr('  Probing 00:00.0 - 00:1F.7:')
 	progress(' ')
-	spinn('Found 00:09.0 - VGA Compatible Controller')
-	spinn('Found 00:1B.0 - Ethernet Controller')
-	spinn('Found 00:1F.3 - SMBus Controller')
+	spin_hide('Found 00:09.0 - VGA Compatible Controller')
+	spin_hide('Found 00:1B.0 - Ethernet Controller')
+	spin_hide('Found 00:1F.3 - SMBus Controller')
 	br()
 	spin_tail('', 'Network Adapters: 19 detected')
 	spin_tail('', 'USB Controller:   UHCI/EHCI Compatible')
@@ -114,11 +114,11 @@ fn bios_firmware() {
 	alert('╔═════════════════════════════════════════════════════════════╗')
 	alert('║  CRITICAL: Firmware Update Sequence Initiated               ║')
 	alert('╚═════════════════════════════════════════════════════════════╝')
-	wait_medium()
+	sleep_medium()
 	br()
 	spin_tail('Backing up current BIOS to NVRAM... ', term.green('OK'))
 	spin_tail('Verifying backup integrity... CRC32 ', term.green('OK'))
-	wait_short()
+	sleep_short()
 	br()
 	warn('  WARNING: Do NOT power off or restart during this process!')
 	warn('  System damage may occur if interrupted!')
@@ -130,7 +130,7 @@ fn bios_firmware() {
 	ps('  Firmware update complete!')
 	br()
 	spin_tail_long('Updating ESCD (Extended System Configuration Data)... ', term.green('OK'))
-	wait_medium()
+	sleep_medium()
 	br()
 	progress('  Recomputing mammal matrix: ')
 	success('  BIOS update successful - AMIBIOS v08.00.15 -> v08.00.16')
@@ -138,46 +138,46 @@ fn bios_firmware() {
 }
 
 fn boot() {
-	title('> Kernel Boot Sequence')
+	section('> Kernel Boot Sequence')
 	pds('q6asm_callback: payload size of 8 is less than expected.')
 	pds('stk3x3x_enable_ps: ps input event=1, ps=0')
 	pds('q6core_get_service_version: Failed to get service size for service id 7 with error -95')
 	pds('cmdq_host_alloc_tdl: desc_size: 1024 data_sz: 63488 slot-sz: 32')
-	wait_short()
+	sleep_short()
 	pds('daixianze msm_mi2s_snd_shutdown tert_mi2s_gpio_p')
 	pds('/cpus/cpu@101: Missing clock-frequency property')
-	wait_short()
+	sleep_short()
 	pds('q6asm_callback: payload size of 8 is less than expected.')
 	pds('Active_profile:speaker, next_profile:speaker')
 	pds('qcrypto 1de0000.qcrypto: qcrypto-ecb-aes')
 	pds("init: Service 'vendor.qcom-sh' (pid 867) exited with status 0")
-	wait_medium()
+	sleep_medium()
 	pds('himax_tp: probe of 4-0048 failed with error -1')
 	pds('IRQ5 no longer affine to CPU5')
 	pds("init: starting service 'vendor.nfc_hal_service'...}")
 }
 
 fn boot_loader() {
-	title('> Bootloader Installation')
+	section('> Bootloader Installation')
 	ps('Installing GRUB2 bootloader...')
 	pds('Probing devices for bootloader installation...')
 	pds('Installing for x86_64-pc platform to /dev/sda')
 	br()
-	wait_short()
+	sleep_short()
 
 	p('Generating grub configuration file...')
-	wait_short()
+	sleep_short()
 	pds('Found linux image: /boot/vmlinuz-5.4.0-42-generic')
 	pds('Found initrd image: /boot/initrd.img-5.4.0-42-generic')
 	pds('Found linux image: /boot/vmlinuz-5.4.0-40-generic')
-	wait_short()
+	sleep_short()
 	pds('Found initrd image: /boot/initrd.img-5.4.0-40-generic')
-	wait_short()
+	sleep_short()
 	pds('Found linux image: /boot/vmlinuz-5.4.0-39-generic')
 	pds('Found initrd image: /boot/initrd.img-5.4.0-39-generic')
 	pds('Found Windows Boot Manager on /dev/sda1')
 	br()
-	wait_short()
+	sleep_short()
 
 	ps('Installing bootloader to disk...')
 	spin_tail_long(term.dim('Installation finished. No error reported. '), term.green('OK'))
@@ -187,7 +187,7 @@ fn boot_loader() {
 }
 
 fn file_system() {
-	title('> Filesystem Operations')
+	section('> Filesystem Operations')
 	p('Creating ext4 filesystem on /dev/sda2...')
 	pds('mke2fs 1.45.5 (07-Jan-2020)')
 	pds('Creating filesystem with 73436249 4k blocks and 18359062 inodes')
@@ -204,10 +204,10 @@ fn file_system() {
 	progress('Writing inode tables: ')
 	br()
 	pds('Creating journal (32768 blocks):')
-	wait_medium()
+	sleep_medium()
 	success('  done')
 	pds('Writing superblocks and filesystem accounting information:')
-	wait_medium()
+	sleep_medium()
 	success('  done')
 
 	br()
@@ -222,7 +222,7 @@ fn file_system() {
 }
 
 fn system() {
-	title('> System Component Installation')
+	section('> System Component Installation')
 	spin_tail('Loading kernel modules', term.green(' [OK]'))
 	spin_tail('Mounting root filesystem (ext3)', term.green(' [OK]'))
 	spin_tail('Initializing network interfaces', term.green(' [OK]'))
@@ -233,7 +233,7 @@ fn system() {
 }
 
 fn network() {
-	title('> Network Configuration')
+	section('> Network Configuration')
 	br()
 	ps('Configuring network interfaces...')
 	pds('  Interface: eth0')
@@ -244,15 +244,15 @@ fn network() {
 	pds('  DNS: 8.8.8.8, 8.8.4.4')
 	br()
 	ps('  Configuring DNS resolution...')
-	wait_medium()
+	sleep_medium()
 	pds('  Updating /etc/resolv.conf')
 	br()
-	wait_medium()
+	sleep_medium()
 	ps('  Reversing polarity of neutron flow...')
 }
 
 fn hardware() {
-	title('> Hardware Driver Installation')
+	section('> Hardware Driver Installation')
 	pws('Detecting: VGA Graphics Adapter', ' [FOUND]')
 	ps('   └─ Loading driver: VESA 2.0 Compatible')
 	pws('Detecting: Sound Blaster 16', ' [FOUND]')
@@ -266,7 +266,7 @@ fn hardware() {
 }
 
 fn database() {
-	title('> Database Server Installation')
+	section('> Database Server Installation')
 	ps('Installing PostgreSQL Server 14.2...')
 	ps('  Initializing database cluster...')
 	pds('The files belonging to this database system will be owned by user "postgres".')
@@ -274,47 +274,47 @@ fn database() {
 	br()
 	ps('Creating database files...')
 	pds('  creating global/pg_control')
-	wait_short()
+	sleep_short()
 	pds('  creating base/1/pg_filenode.map')
-	wait_short()
+	sleep_short()
 	pds('  creating base/template1/pg_version')
-	wait_short()
+	sleep_short()
 	pds('  creating pg_wal/000000010000000000000001')
-	wait_short()
+	sleep_short()
 	pds('  creating pg_multixact/offsets/0000')
 	br()
-	wait_short()
+	sleep_short()
 	progress('Initializing system tables: ')
 	br()
 	ps('Creating template databases...')
-	wait_medium()
+	sleep_medium()
 	success('  Success. You can now start the database server using:')
 	pds('  pdpg_ctl -D /var/lib/postgresql/dataa')
 	br()
 	alert('Mirror unresponsive, trying alternate server')
 	ps('  Reconnecting to mirror.oldsoft.org')
-	wait_long()
+	sleep_long()
 	success('  Success')
 }
 
 fn services() {
-	title('Starting system services...')
-	stall('[ OK ] Started Network Manager....')
-	stall('[ OK ] Started Network Name Resolution....')
-	stall('[ OK ] Started OpenSSH server daemon....')
-	stall('[ OK ] Started Regular background program processing daemon....')
-	stall('[ OK ] Started System Logging Service....')
-	stall('[ OK ] Started D-Bus System Message Bus....')
-	stall('[ OK ] Started Avahi mDNS/DNS-SD Stack....')
-	stall('[ OK ] Started CUPS Scheduler....')
-	stall('[ OK ] Started Bluetooth service....')
-	stall('[ OK ] Started The Apache HTTP Server....')
+	section('Starting system services...')
+	ok_first_format('[ OK ] Started Network Manager....')
+	ok_first_format('[ OK ] Started Network Name Resolution....')
+	ok_first_format('[ OK ] Started OpenSSH server daemon....')
+	ok_first_format('[ OK ] Started Regular background program processing daemon....')
+	ok_first_format('[ OK ] Started System Logging Service....')
+	ok_first_format('[ OK ] Started D-Bus System Message Bus....')
+	ok_first_format('[ OK ] Started Avahi mDNS/DNS-SD Stack....')
+	ok_first_format('[ OK ] Started CUPS Scheduler....')
+	ok_first_format('[ OK ] Started Bluetooth service....')
+	ok_first_format('[ OK ] Started The Apache HTTP Server....')
 	br()
 	pds('Loaded 10 services, 10 active')
 }
 
 fn retro() {
-	title('> Retro Software Installation')
+	section('> Retro Software Installation')
 	ps('Installing Netscape Navigator v4.79')
 	ps('  Checking for previous installation...')
 	progress('  Extracting files (14.9MB): ')
@@ -339,39 +339,39 @@ fn retro() {
 }
 
 fn localization() {
-	title('> Localization Configuration')
+	section('> Localization Configuration')
 	pds('Generating locales...')
 	pds('Generating locale en_US.UTF-8...')
-	wait_medium()
+	sleep_medium()
 	success('done')
 	pds('Generating locale en_GB.UTF-8...')
-	wait_medium()
+	sleep_medium()
 	success('done')
 	pds('Generating locale de_DE.UTF-8...')
-	wait_medium()
+	sleep_medium()
 	success('done')
 	pds('Generating locale fr_FR.UTF-8...')
-	wait_medium()
+	sleep_medium()
 	success('done')
 	pds('Generating locale es_ES.UTF-8...')
-	wait_medium()
+	sleep_medium()
 	success('done')
 	pds('Generating locale ja_JP.UTF-8...')
-	wait_medium()
+	sleep_medium()
 	success('done')
 	pds('Generating locale zh_CN.UTF-8...')
-	wait_medium()
+	sleep_medium()
 	success('done')
 	br()
 	progress('Building locale archive: ')
 	br()
 	ps('Configuring timezone...')
-	wait_short()
+	sleep_short()
 	pds('Timezone set to: Europe/Berlin')
 }
 
 fn optimization() {
-	title('> System Optimization')
+	section('> System Optimization')
 	progress('Defragmenting installation cache ')
 	progress('Rebuilding font cache ')
 	progress('Updating shared library cache ')
@@ -384,19 +384,19 @@ fn optimization() {
 //            helpers
 // ===============================
 
-fn wait_x_short() {
+fn sleep_x_short() {
 	time.sleep(time.millisecond * 100)
 }
 
-fn wait_short() {
+fn sleep_short() {
 	time.sleep(time.millisecond * 500)
 }
 
-fn wait_medium() {
+fn sleep_medium() {
 	time.sleep(time.millisecond * 1500)
 }
 
-fn wait_long() {
+fn sleep_long() {
 	time.sleep(time.millisecond * 2500)
 }
 
@@ -409,7 +409,7 @@ fn spin_tail(s string, tail string) {
 	spinner(s, duration, ' ', tail)
 }
 
-fn spinn(s string) {
+fn spin_hide(s string) {
 	duration := rand.int_in_range(500, 1500) or { 500 }
 	spinner(s, duration, ' ', '')
 }
@@ -419,18 +419,9 @@ fn spin(s string) {
 	spinner(s, duration, '✓', '')
 }
 
-fn spin_wait(s string) {
+fn spin_short(s string) {
 	spin(s)
-	wait_short()
-}
-
-fn stall(s string) {
-	pnr(term.cyan(s.replace('OK', '**')))
-	flush_stdout()
-	snooze := rand.int_in_range(200, 700) or { 300 }
-	time.sleep(snooze * time.millisecond)
-	term.cursor_back(display_length(s))
-	success(s)
+	sleep_short()
 }
 
 const spin_chars = ['|', '/', '-', '\\']
@@ -469,18 +460,31 @@ fn progress(front string) {
 	p('[${term.green('#'.repeat(len))}] 100%')
 }
 
+fn ok_first_format(s string) {
+	pnr(term.cyan(s.replace('OK', '**')))
+	flush_stdout()
+	snooze := rand.int_in_range(200, 700) or { 300 }
+	time.sleep(snooze * time.millisecond)
+	term.cursor_back(display_length(s))
+	success(s)
+}
+
 fn p(s string) {
 	println(s)
 }
 
+fn pd(s string) {
+	p(term.dim(s))
+}
+
 fn ps(s string) {
 	p(s)
-	wait_x_short()
+	sleep_x_short()
 }
 
 fn pds(s string) {
 	pd(s)
-	wait_x_short()
+	sleep_x_short()
 }
 
 fn pnr(s string) {
@@ -498,19 +502,15 @@ fn br() {
 	p('')
 }
 
-fn title(s string) {
+fn section(s string) {
 	br()
 	alert(term.bold(s))
 	br()
-	wait_short()
+	sleep_short()
 }
 
 fn bold(s string) {
 	p(term.bold(s))
-}
-
-fn pd(s string) {
-	p(term.dim(s))
 }
 
 fn success(s string) {

@@ -48,12 +48,12 @@ fn preamble() {
 }
 
 fn initializing_system() {
-	spin('Initializing installation environment...')
-	sleep_short()
-	spin('Detecting hardware configuration...')
-	sleep_short()
-	spin('Calibrating flux capacitor...')
-	sleep_short()
+	spin_short('Initializing installation environment...')
+	spin_short('Detecting hardware configuration...')
+	spin_short('Calibrating flux capacitor...')
+	spin_short('Fabricating imaginary infrastructure...')
+	spin_short('Preparing captive simulators...')
+	spin_short('Blurring reality lines...')
 }
 
 fn bios_firmware() {
@@ -132,6 +132,7 @@ fn bios_firmware() {
 	spin_tail_long('Updating ESCD (Extended System Configuration Data)... ', term.green('OK'))
 	sleep_medium()
 	br()
+	progress('  Recomputing mammal matrix: ')
 	success('  BIOS update successful - AMIBIOS v08.00.15 -> v08.00.16')
 	success('  System will initialize with new firmware')
 }
@@ -376,6 +377,7 @@ fn optimization() {
 	progress('Updating shared library cache ')
 	progress('Optimizing package database ')
 	progress('Generating manual page index ')
+	progress('Compiling reticulated splines ')
 }
 
 // ===============================
@@ -415,6 +417,11 @@ fn spin_hide(s string) {
 fn spin(s string) {
 	duration := rand.int_in_range(500, 1500) or { 500 }
 	spinner(s, duration, '✓', '')
+}
+
+fn spin_short(s string) {
+	spin(s)
+	sleep_short()
 }
 
 const spin_chars = ['|', '/', '-', '\\']
